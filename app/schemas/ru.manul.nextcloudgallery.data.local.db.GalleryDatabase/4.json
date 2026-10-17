@@ -1,0 +1,573 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "f6dc0f56dc2af174ed5a81e86275e350",
+    "entities": [
+      {
+        "tableName": "accounts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`account_id` TEXT NOT NULL, `server_address` TEXT NOT NULL, `username` TEXT NOT NULL, `display_name` TEXT, `active` INTEGER NOT NULL, `updated_at_epoch_ms` INTEGER NOT NULL, PRIMARY KEY(`account_id`))",
+        "fields": [
+          {
+            "fieldPath": "accountId",
+            "columnName": "account_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serverAddress",
+            "columnName": "server_address",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "display_name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAtEpochMs",
+            "columnName": "updated_at_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "account_id"
+          ]
+        }
+      },
+      {
+        "tableName": "media",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`account_id` TEXT NOT NULL, `remote_path` TEXT NOT NULL, `parent_path` TEXT NOT NULL, `display_name` TEXT NOT NULL, `mime_type` TEXT NOT NULL, `kind` TEXT NOT NULL, `size_bytes` INTEGER NOT NULL, `etag` TEXT, `captured_at_epoch_ms` INTEGER, `modified_at_epoch_ms` INTEGER NOT NULL, `sort_epoch_ms` INTEGER NOT NULL, `has_preview` INTEGER NOT NULL, `sync_generation` INTEGER NOT NULL, PRIMARY KEY(`account_id`, `remote_path`), FOREIGN KEY(`account_id`) REFERENCES `accounts`(`account_id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "accountId",
+            "columnName": "account_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remotePath",
+            "columnName": "remote_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentPath",
+            "columnName": "parent_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "display_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mimeType",
+            "columnName": "mime_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kind",
+            "columnName": "kind",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sizeBytes",
+            "columnName": "size_bytes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "etag",
+            "columnName": "etag",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "capturedAtEpochMs",
+            "columnName": "captured_at_epoch_ms",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "modifiedAtEpochMs",
+            "columnName": "modified_at_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sortEpochMs",
+            "columnName": "sort_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasPreview",
+            "columnName": "has_preview",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncGeneration",
+            "columnName": "sync_generation",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "account_id",
+            "remote_path"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_media_account_id_parent_path_sort_epoch_ms",
+            "unique": false,
+            "columnNames": [
+              "account_id",
+              "parent_path",
+              "sort_epoch_ms"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_media_account_id_parent_path_sort_epoch_ms` ON `${TABLE_NAME}` (`account_id`, `parent_path`, `sort_epoch_ms`)"
+          },
+          {
+            "name": "index_media_account_id_etag",
+            "unique": false,
+            "columnNames": [
+              "account_id",
+              "etag"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_media_account_id_etag` ON `${TABLE_NAME}` (`account_id`, `etag`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "accounts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "account_id"
+            ],
+            "referencedColumns": [
+              "account_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "sync_cursors",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`account_id` TEXT NOT NULL, `remote_path` TEXT NOT NULL, `directory_etag` TEXT, `last_sync_epoch_ms` INTEGER NOT NULL, `sync_generation` INTEGER NOT NULL, PRIMARY KEY(`account_id`, `remote_path`), FOREIGN KEY(`account_id`) REFERENCES `accounts`(`account_id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "accountId",
+            "columnName": "account_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remotePath",
+            "columnName": "remote_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "directoryEtag",
+            "columnName": "directory_etag",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastSyncEpochMs",
+            "columnName": "last_sync_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "syncGeneration",
+            "columnName": "sync_generation",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "account_id",
+            "remote_path"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "accounts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "account_id"
+            ],
+            "referencedColumns": [
+              "account_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "upload_jobs",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`job_id` TEXT NOT NULL, `account_id` TEXT NOT NULL, `local_uri` TEXT NOT NULL, `remote_path` TEXT NOT NULL, `size_bytes` INTEGER NOT NULL, `transferred_bytes` INTEGER NOT NULL, `state` TEXT NOT NULL, `attempt` INTEGER NOT NULL, `failure_message` TEXT, `next_attempt_epoch_ms` INTEGER, `destination_resolved` INTEGER NOT NULL DEFAULT 0, `result_etag` TEXT, `created_at_epoch_ms` INTEGER NOT NULL, `updated_at_epoch_ms` INTEGER NOT NULL, PRIMARY KEY(`job_id`), FOREIGN KEY(`account_id`) REFERENCES `accounts`(`account_id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "jobId",
+            "columnName": "job_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accountId",
+            "columnName": "account_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localUri",
+            "columnName": "local_uri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remotePath",
+            "columnName": "remote_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sizeBytes",
+            "columnName": "size_bytes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transferredBytes",
+            "columnName": "transferred_bytes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "state",
+            "columnName": "state",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "attempt",
+            "columnName": "attempt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "failureMessage",
+            "columnName": "failure_message",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "nextAttemptEpochMs",
+            "columnName": "next_attempt_epoch_ms",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "destinationResolved",
+            "columnName": "destination_resolved",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "resultEtag",
+            "columnName": "result_etag",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAtEpochMs",
+            "columnName": "created_at_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAtEpochMs",
+            "columnName": "updated_at_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "job_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_upload_jobs_account_id_state_next_attempt_epoch_ms",
+            "unique": false,
+            "columnNames": [
+              "account_id",
+              "state",
+              "next_attempt_epoch_ms"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_upload_jobs_account_id_state_next_attempt_epoch_ms` ON `${TABLE_NAME}` (`account_id`, `state`, `next_attempt_epoch_ms`)"
+          },
+          {
+            "name": "index_upload_jobs_account_id_remote_path",
+            "unique": false,
+            "columnNames": [
+              "account_id",
+              "remote_path"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_upload_jobs_account_id_remote_path` ON `${TABLE_NAME}` (`account_id`, `remote_path`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "accounts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "account_id"
+            ],
+            "referencedColumns": [
+              "account_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "auto_upload_policies",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`account_id` TEXT NOT NULL, `enabled` INTEGER NOT NULL, `include_camera` INTEGER NOT NULL, `include_screenshots` INTEGER NOT NULL, `include_videos` INTEGER NOT NULL, `wifi_only` INTEGER NOT NULL, `required_ssid` TEXT, `require_charging` INTEGER NOT NULL, `minimum_battery_percent` INTEGER NOT NULL, `remote_base_path` TEXT NOT NULL, `device_folder` TEXT NOT NULL, PRIMARY KEY(`account_id`), FOREIGN KEY(`account_id`) REFERENCES `accounts`(`account_id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "accountId",
+            "columnName": "account_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "enabled",
+            "columnName": "enabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "includeCamera",
+            "columnName": "include_camera",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "includeScreenshots",
+            "columnName": "include_screenshots",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "includeVideos",
+            "columnName": "include_videos",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wifiOnly",
+            "columnName": "wifi_only",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "requiredSsid",
+            "columnName": "required_ssid",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "requireCharging",
+            "columnName": "require_charging",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minimumBatteryPercent",
+            "columnName": "minimum_battery_percent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteBasePath",
+            "columnName": "remote_base_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deviceFolder",
+            "columnName": "device_folder",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "account_id"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "accounts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "account_id"
+            ],
+            "referencedColumns": [
+              "account_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "auto_upload_items",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`account_id` TEXT NOT NULL, `local_key` TEXT NOT NULL, `content_uri` TEXT NOT NULL, `display_name` TEXT NOT NULL, `relative_path` TEXT NOT NULL, `kind` TEXT NOT NULL, `mime_type` TEXT, `size_bytes` INTEGER NOT NULL, `captured_at_epoch_ms` INTEGER NOT NULL, `modified_at_epoch_seconds` INTEGER NOT NULL, `state` TEXT NOT NULL, `upload_job_id` TEXT, `updated_at_epoch_ms` INTEGER NOT NULL, PRIMARY KEY(`account_id`, `local_key`), FOREIGN KEY(`account_id`) REFERENCES `accounts`(`account_id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "accountId",
+            "columnName": "account_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localKey",
+            "columnName": "local_key",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contentUri",
+            "columnName": "content_uri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "display_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "relativePath",
+            "columnName": "relative_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kind",
+            "columnName": "kind",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mimeType",
+            "columnName": "mime_type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sizeBytes",
+            "columnName": "size_bytes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "capturedAtEpochMs",
+            "columnName": "captured_at_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "modifiedAtEpochSeconds",
+            "columnName": "modified_at_epoch_seconds",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "state",
+            "columnName": "state",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uploadJobId",
+            "columnName": "upload_job_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "updatedAtEpochMs",
+            "columnName": "updated_at_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "account_id",
+            "local_key"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_auto_upload_items_upload_job_id",
+            "unique": true,
+            "columnNames": [
+              "upload_job_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_auto_upload_items_upload_job_id` ON `${TABLE_NAME}` (`upload_job_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "accounts",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "account_id"
+            ],
+            "referencedColumns": [
+              "account_id"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f6dc0f56dc2af174ed5a81e86275e350')"
+    ]
+  }
+}
