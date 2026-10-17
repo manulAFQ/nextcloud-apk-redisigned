@@ -45,6 +45,7 @@ jobs:
             gh release create v0.1.14 \
               Oblako-0.1.14.apk \
               Oblako-0.1.14.apk.sha256 \
-              --target "$GITHUB_SHA" \
-              --title "Oblako 0.1.14" \
-              --notes "First public, sanitized Android build of Oblako — a direct, photo-first Nextcloud gallery. This installable APK is debug-signed for testing. No server address, account, token, or personal media is embedded. SHA-256 is provided as a separate asset."
+            --target "$GITHUB_SHA" \
+            --title "Oblako 0.1.14" \
+            --notes "First public, sanitized Android build of Oblako — a direct, photo-first Nextcloud gallery. This installable APK is debug-signed for testing. No server address, account, token, or personal media is embedded. SHA-256 is provided as a separate asset."
+          fi
