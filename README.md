@@ -6,6 +6,12 @@ The project aims to be the most beautiful native Android gallery available for N
 
 > Your phone connects directly to your Nextcloud server. Oblako does not operate an intermediary service and does not receive your credentials, photographs, or account data.
 
+<p align="center">
+  <img src="docs/images/oblako-design-preview.png" alt="Oblako redesigned Nextcloud Android gallery showing the photo timeline, albums, and synchronization settings" width="100%">
+</p>
+
+The interface is the product: edge-to-edge media, compact typography, calm dark surfaces, animated cloud state, fast gestures, and controls that stay out of the photographs. The preview above uses the original visual-design image set bundled with the project mockup; no personal cloud media or account information is included.
+
 ## Why Oblako
 
 The official Nextcloud Android client is an excellent general-purpose file manager, but a photo library deserves a dedicated experience. Oblako is designed around photographs rather than folders:
