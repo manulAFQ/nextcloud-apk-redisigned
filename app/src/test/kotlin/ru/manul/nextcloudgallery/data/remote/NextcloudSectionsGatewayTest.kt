@@ -27,7 +27,7 @@ class NextcloudSectionsGatewayTest {
         assertTrue(result is AppResult.Success)
         val event = (result as AppResult.Success).value.single()
         assertEquals(17L, event.id)
-        assertEquals("Ярослав добавил photo.jpg", event.subject)
+        assertEquals("Test user added photo.jpg", event.subject)
         val request = server.takeRequest()
         assertEquals("/ocs/v2.php/apps/activity/api/v2/activity", request.url.encodedPath)
         assertEquals("true", request.headers["OCS-APIRequest"])

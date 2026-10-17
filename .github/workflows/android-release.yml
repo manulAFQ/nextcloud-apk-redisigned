@@ -1,0 +1,50 @@
+name: Build and publish Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Publish v0.1.14 APK'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Verify and build
+        run: |
+          chmod +x gradlew
+          ./gradlew testDebugUnitTest lintDebug assembleDebug
+
+      - name: Prepare release assets
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk Oblako-0.1.14.apk
+          sha256sum Oblako-0.1.14.apk > Oblako-0.1.14.apk.sha256
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view v0.1.14 >/dev/null 2>&1; then
+            gh release upload v0.1.14 Oblako-0.1.14.apk Oblako-0.1.14.apk.sha256 --clobber
+          else
+            gh release create v0.1.14 \
+              Oblako-0.1.14.apk \
+              Oblako-0.1.14.apk.sha256 \
+              --target "$GITHUB_SHA" \
+              --title "Oblako 0.1.14" \
+              --notes "First public, sanitized Android build of Oblako — a direct, photo-first Nextcloud gallery. This installable APK is debug-signed for testing. No server address, account, token, or personal media is embedded. SHA-256 is provided as a separate asset."
