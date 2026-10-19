@@ -29,7 +29,6 @@ The official Nextcloud Android client is an excellent general-purpose file manag
 - sharing, deletion, download, and transfer progress;
 - swipe navigation in the full-screen photo viewer;
 - local device folders and explicit, opt-in synchronization controls;
-- auto-upload disabled by default until the user enables it;
 - light, dark, and system theme modes;
 - dedicated sections for Events, Media, Albums, Transfer Status, Synchronization, On Device, and Deleted Files;
 - smooth entrance, navigation, cloud-state, and viewer animations;
